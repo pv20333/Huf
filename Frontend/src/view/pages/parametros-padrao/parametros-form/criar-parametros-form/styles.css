@@ -1,0 +1,4 @@
+/*diminuir o tamanho do colapse*/
+.ant-collapse>.ant-collapse-item>.ant-collapse-header {
+    padding: 12px !important;
+}

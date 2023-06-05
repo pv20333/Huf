@@ -1,0 +1,49 @@
+/*centrar texto*/
+.centrar-texto{
+    text-align: center;
+    font-weight: 600;
+}
+
+/*button*/
+/* .button {
+    position: fixed;
+    right: 260px;
+    bottom: 800px;
+  } */
+
+
+/*cor das linhas diferente*/
+.ant-table table tr:nth-child(even) {
+   
+    background-color: #FFE6E6;
+}
+/*cor do header*/
+.ant-table-thead > tr > th {
+    position: relative;
+    color: #FF0613;
+    font-weight: 500;
+    text-align: left;
+    background: #E1E1E1;
+    border-bottom: 1px solid #dfe6e9;
+    transition: background 0.3s ease;
+}
+
+/*cor do paginacao(1)*/
+
+.ant-pagination-item-active a {
+    color: #FF0613;
+}
+
+/*cor da border da paginacao*/
+
+.ant-pagination-item-active {
+    font-weight: 500;
+    background: #fff;
+    border-color: #FF0613;
+}
+
+/*shadow na tabela*/
+
+.ant-table table{
+    box-shadow:  rgba(0, 0, 0, 0.1) 0px 3px 6px;
+}
