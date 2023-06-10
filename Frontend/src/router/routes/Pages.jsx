@@ -40,6 +40,11 @@ const PagesRoutes = [
     component: lazy(() => import("../../view/pages/testes3")),
     layout: "VerticalLayout",
   },
+  {
+    path: "/pages/testes4",
+    component: lazy(() => import("../../view/pages/testes4")),
+    layout: "VerticalLayout",
+  },
   
 ];
 
