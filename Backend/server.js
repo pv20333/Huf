@@ -33,6 +33,9 @@ require("./app/routes/tabelacriar.routes")(app);
 require("./app/routes/escolher.tabelas")(app);
 require("./app/routes/editar.formularios")(app);
 require("./app/routes/preencher.formulario")(app);
+require("./app/routes/listarPP")(app);
+require("./app/routes/renderizarPP")(app);
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

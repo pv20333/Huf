@@ -13,11 +13,19 @@ const PagesRoutes = [
     component: lazy(() => import("../../view/pages/parametros-padrao/parametros-form/index")),
     layout: "VerticalLayout",
   },
+
+  {
+    path: "/pages/parametrospadrao/detalhes/:n_ParametroPadrao",
+    component: lazy(() => import("../../view/pages/parametros-padrao/parametros-form/PPdetalhes")),
+    layout: "VerticalLayout",
+  },
+  
   {
     path: "/pages/parametrospadrao",
     component: lazy(() => import("../../view/pages/parametros-padrao")),
     layout: "VerticalLayout",
   },
+  
   {
     path: "/pages/maquinas",
     component: lazy(() => import("../../view/pages/maquinas")),

@@ -98,6 +98,51 @@ function RenderizarFormulario() {
       });
   };
 
+  const handleSubmeter = () => {
+    const parametroPadrao = {
+      designacao
+    };
+  
+    axios
+      .post(`http://localhost:8080/api/preencherformulario/formularios/${selectedFormulario}/submeter`, parametroPadrao)
+      .then((res) => {
+        console.log(res);
+        const n_ParametroPadrao = res.data.n_ParametroPadrao;
+  
+        Object.keys(tabelaRespostas).forEach((tableIndex) => {
+          const n_TabelaRespostas = Number(tableIndex);
+  
+          tabelasFormulario[tableIndex]?.TabelaGeral?.Colunas?.forEach((coluna) => {
+            const n_TabelaColunas = coluna.n_TabelaColunas;
+  
+            Object.keys(tabelaRespostas[tableIndex]).forEach((rowIndex) => {
+              const resposta = {
+                n_TabelaRespostas,
+                n_ParametroPadrao,
+                n_TabelaColunas,
+                respostas: tabelaRespostas[tableIndex][rowIndex][coluna.TituloColunas]
+              };
+  
+              console.log('Submetendo resposta:', resposta);
+  
+              axios
+                .post(`http://localhost:8080/api/preencherformulario/formularios/${selectedFormulario}/adicionarrespostas`, resposta)
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((error) => {
+                  console.error("Erro ao adicionar respostas", error);
+                });
+            });
+          });
+        });
+      })
+      .catch((error) => {
+        console.error("Erro ao submeter", error);
+      });
+  };
+  
+
   return (
     <div>
       <h1>Insira o nome do parâmetro padrão</h1>
@@ -146,6 +191,7 @@ function RenderizarFormulario() {
         );
       })}
       <Button onClick={handleGuardar}>Guardar</Button>
+      <Button onClick={handleSubmeter}>Submeter</Button>
     </div>
   );
 }

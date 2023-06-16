@@ -6,7 +6,9 @@ module.exports = app => {
     
     router.post('/formularios/:id/adicionarrespostas', preencherformulario.addRespostas);
 
-    router.post('/formularios/:id/adicionarparametropadrao', preencherformulario.createParametroPadrao);
+    router.post('/formularios/:id/adicionarparametropadrao', preencherformulario.createOrUpdateParametroPadrao);
+
+    router.post('/formularios/:id/submeter', preencherformulario.submeter);
 
 
 

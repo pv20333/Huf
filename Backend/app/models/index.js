@@ -37,6 +37,7 @@ db.tabela_colunas = require("./tabela_colunas")(sequelize,Sequelize);
 db.tabela_respostas = require("./tabela_respostas")(sequelize,Sequelize);
 db.formularios_tabelas = require("./formularios_tabelas.js")(sequelize, Sequelize);
 db.formularios = require("./formularios.js")(sequelize, Sequelize);
+db.estados = require("./estados.js")(sequelize, Sequelize);
 
 
 
@@ -83,6 +84,15 @@ db.parametros_padrao.belongsTo(db.formularios, {
   onUpdate: 'CASCADE',
   as: 'Formularios2'
 });
+
+db.parametros_padrao.hasMany(db.historico_estados, {
+  foreignKey: 'n_ParametroPadrao',
+  sourceKey: 'n_ParametroPadrao',
+  onUpdate: 'CASCADE',
+  //as: 'HistoricoEstados'
+});
+
+
 // db.sequelize.query(`
 //   IF NOT EXISTS (
 //     SELECT * FROM sys.indexes
@@ -222,6 +232,12 @@ db.historico_estados.belongsTo(db.parametros_padrao, {
   onUpdate: 'CASCADE'
 });
 
+db.historico_estados.belongsTo(db.estados, {
+  foreignKey: 'n_Estados',
+  targetKey: 'n_Estados',
+  onUpdate: 'CASCADE'
+}); 
+
 
 db.tabela_colunas.belongsTo(db.tabela_geral, {
   foreignKey: 'n_TabelaGeral',
@@ -271,6 +287,8 @@ db.tabela_geral.hasMany(db.tabela_colunas, {
   targetKey: 'n_TabelaGeral',
   as: 'Colunas'
 });
+
+
 
 
 

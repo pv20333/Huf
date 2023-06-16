@@ -7,6 +7,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       n_ParametroPadrao: Sequelize.INTEGER,
       n_Versao: Sequelize.INTEGER,
+      n_Estados: Sequelize.INTEGER,
       Data: Sequelize.DATE,
     });
   

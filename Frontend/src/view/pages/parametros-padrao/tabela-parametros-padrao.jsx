@@ -1,50 +1,44 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, Table } from 'antd';
-import { useRef, useState } from 'react';
+import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import Switch from "./switch.jsx";
+import { useHistory } from 'react-router-dom';
 
 
-
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Joe Black',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Jim Green',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-];
 const App = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [data, setData] = useState([]);
   const searchInput = useRef(null);
+  const history = useHistory();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get('http://localhost:8080/api/listarpp/parametros_padrao'); // Adicione o endereço do seu servidor aqui
+      setData(result.data.map((item, index) => ({
+        key: index,
+        n_ParametroPadrao: item.n_ParametroPadrao,
+        descricao: item.descricao,
+        historico_estados: item.Historico_Estados ? item.Historico_Estados.map(estado => estado.n_Estados).join(', ') : '',
+
+      })));
+    };
+
+    fetchData();
+  }, []);
+
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
+
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText('');
   };
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div
@@ -105,7 +99,7 @@ const App = () => {
               close();
             }}
           >
-            close
+            Close
           </Button>
         </Space>
       </div>
@@ -119,7 +113,7 @@ const App = () => {
     ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
@@ -139,37 +133,45 @@ const App = () => {
         text
       ),
   });
+
+  const handleRowClick = (record) => {
+    history.push(`/pages/parametrospadrao/detalhes/${record.n_ParametroPadrao}`);
+  };
+
+
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      width: '30%',
-      ...getColumnSearchProps('name'),
+      title: 'n_ParametroPadrao',
+      dataIndex: 'n_ParametroPadrao',
+      key: 'n_ParametroPadrao',
+      ...getColumnSearchProps('n_ParametroPadrao'),
+      render: (text, record) => (
+        <a onClick={() => handleRowClick(record)}>
+          {text}
+        </a>
+      )
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-      width: '20%',
-      ...getColumnSearchProps('age'),
+      title: 'descricao',
+      dataIndex: 'descricao',
+      key: 'descricao',
+      ...getColumnSearchProps('descricao'),
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-      ...getColumnSearchProps('address'),
-      sorter: (a, b) => a.address.length - b.address.length,
-      sortDirections: ['descend', 'ascend'],
+      title: 'historico_estados',
+      dataIndex: 'historico_estados',
+      key: 'historico_estados',
+      ...getColumnSearchProps('historico_estados'),
     },
     {
       title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      render: (id) => <Switch />,
-      
+      dataIndex: '',
+      key: 'x',
+      render: () => <Switch />,
     },
   ];
+
   return <Table columns={columns} dataSource={data} />;
 };
+
 export default App;
