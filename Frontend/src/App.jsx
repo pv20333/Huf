@@ -7,6 +7,7 @@ import { IntlProvider } from "react-intl";
 import AppLocale from './languages';
 
 import Router from "./router/Router";
+import {isExpiredBoolean} from '../src/view/pages/login/token'
 
 export default function App() {
   // Redux

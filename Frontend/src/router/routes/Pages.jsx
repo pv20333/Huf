@@ -4,6 +4,16 @@ import { BrowserRouter } from 'react-router-dom';
 const PagesRoutes = [
   // PAGES
   {
+    path: "/pages/login",
+    component: lazy(() => import("../../view/pages/login/index")),
+    layout: "FullLayout",
+  },
+  {
+    path: "/pages/odata",
+    component: lazy(() => import("../../view/pages/Odatatestes/index")),
+    layout: "VerticalLayout",
+  },
+  {
     path: "/pages/parametrospadrao/formulario/criarformulario",
     component: lazy(() => import("../../view/pages/parametros-padrao/parametros-form/criar-parametros-form/index")),
     layout: "VerticalLayout",

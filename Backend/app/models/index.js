@@ -92,6 +92,11 @@ db.parametros_padrao.hasMany(db.historico_estados, {
   //as: 'HistoricoEstados'
 });
 
+db.parametros_padrao.hasMany(db.tabela_respostas, {
+  foreignKey: 'n_ParametrosPadrao',
+  sourceKey: 'n_ParametroPadrao',
+  onUpdate: 'CASCADE',
+});
 
 // db.sequelize.query(`
 //   IF NOT EXISTS (
@@ -287,6 +292,8 @@ db.tabela_geral.hasMany(db.tabela_colunas, {
   targetKey: 'n_TabelaGeral',
   as: 'Colunas'
 });
+
+
 
 
 
