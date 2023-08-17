@@ -18,7 +18,15 @@ module.exports = app => {
 
     router.put('/parametroPadraoRespostas/:n_ParametroPadrao', renderizarpp.updateRespostas);
 
+    router.put('/parametroPadraoCancelar/:n_ParametroPadrao', renderizarpp.alterarEstadoParametroPadraoCancelar);
 
+    router.get('/historicoeventos/:n_ParametroPadrao', renderizarpp.buscarHistoricoEventosPorParametroPadrao);
+
+    router.put('/parametroPadraoSubmited/:n_ParametroPadrao', renderizarpp.alterarEstadoParametroPadraoSubmited);
+
+    router.put('/parametroPadraoSubmitedtoSaved/:n_ParametroPadrao', renderizarpp.alterarEstadoParametroPadraoSubmitedtoSaved);
+
+    router.put('/parametroPadraoCompleto/:n_ParametroPadrao', renderizarpp.alterarEstadoParametroPadraoCompleto);
 
 
 

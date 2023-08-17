@@ -1,0 +1,77 @@
+/* .logout-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0px 20px;
+    background-color: #747577;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 1s ease-in-out, box-shadow 1s ease-in-out;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    
+}
+
+.logout-button:hover {
+    background-color: #1d242a;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-button i {
+    margin-left: 10px;
+} */
+
+
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr auto;  /* Isso fará com que o botão (se for o último item) fique à direita */
+}
+
+.exit-btn:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.exit-btn {
+    border: none;
+    font-family: 'Roboto', sans-serif; /* Aqui definimos a fonte Roboto */
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+    padding: 0px 10px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    outline: none;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.exit-btn-3 {
+    background-color: #282F8A;
+    color: #fff;
+    border-radius: 7px;
+    box-shadow: 0 5px #202670;
+    padding: 25px 60px 25px 90px;
+}
+
+.exit-btn-3:before {
+    position: absolute;
+    left: 0;
+    width: 40%;
+    font-size: 160%;
+    line-height: 0.8;
+    color: #fff;
+    content: "\e163";
+    
+}

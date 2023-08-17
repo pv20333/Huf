@@ -10,9 +10,15 @@ const addRespostas = async (req, res) => {
   console.log('Corpo da requisição:', req.body);
   const { n_ParametroPadrao, n_TabelaColunas, respostas } = req.body;
 
-  if ( !n_ParametroPadrao || !n_TabelaColunas || !respostas) {
-    return res.status(400).send({ message: "Campos obrigatórios estão faltando" });
+  if ( !n_ParametroPadrao || !n_TabelaColunas) {
+    return res.status(600).send({ message: "Campos obrigatórios estão faltando" });
   }
+
+  console.log("Got: ")
+  console.log("n_ParametroPadrao: " + n_ParametroPadrao)
+  console.log("n_TabelaColunas: " + n_TabelaColunas)
+  console.log("respostas: " + respostas)
+  console.log("------------------\n")
 
   try {
     const newResposta = await TabelaRespostas.create({
@@ -35,10 +41,10 @@ const addRespostas = async (req, res) => {
 const createOrUpdateParametroPadrao = async (req, res) => {
     const { n_ParametroPadrao, designacao } = req.body;
     const idFormulario = req.params.id; // obtendo o id do formulário
-
+    //return res.status(200).send({ message: "Campos obrigatórios estão faltando" });
     console.log("id formulario: ", idFormulario);
     if (!designacao) {
-      return res.status(400).send({ message: "Campos obrigatórios estão faltando" });
+      return res.status(300).send({ message: "Campos obrigatórios estão faltando" });
     }
 
     try {

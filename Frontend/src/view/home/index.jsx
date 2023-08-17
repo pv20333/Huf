@@ -3,6 +3,7 @@ import {React, useEffect} from "react";
 import { Card, Col, Row } from "antd";
 
 import PageTitle from "../../layout/components/content/page-title";
+//import ImgProfile from "../components/imgProfile/imgProfile"
 
 //linha para copiar para todos os index
 import {isExpiredBoolean, validateToken} from '../pages/login/token'
@@ -25,7 +26,7 @@ export default function Home() {
       <PageTitle
         pageTitle="Home Page"
       />
-
+        {/* <ImgProfile /> */}
       
     </Row>
   );

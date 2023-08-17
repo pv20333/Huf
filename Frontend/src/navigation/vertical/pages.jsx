@@ -2,62 +2,157 @@ import { Award } from 'iconsax-react';
 
 import IntlMessages from "../../layout/components/lang/IntlMessages";
 
-const pages = [
+import { parseJwt } from '../../view/pages/login/token';
+
+
+
+const ITPagesRoles = [
     {
-        header: "Seguimentos",
+        header: "Follow-ups",
     },
     {
-        id: "Pendentes",
-        title: "Pendentes",
-        navLink: "/pages/Pendentes",
+        id: "Seguimentos",
+        title: "Follow-ups",
+        navLink: "/pages/listarSeguimentos",
     },
     {
-        id: "Pendentes OK 1º Peça",
-        title: "Pendentes OK 1º Peça",
-        navLink: "/pages/PendentesOK1Peça",
-    },
-    {
-        header: "Configurações",
+        header: "List Tables",
     },
     {
         id: "Parametros Padrão",
-        title: "Parametros Padrão",
+        title: "Default Parameters",
         navLink: "/pages/ParametrosPadrao",
     },
     {
         id: "maquinas",
-        title: "Maquinas",
+        title: "Machines",
         navLink: "/pages/Maquinas",
     },
     {
-        id: "Referencias",
-        title: "Referencias",
-        navLink: "/pages/Referencias",
-    },
-    {
         id: "Materia Prima",
-        title: "Materia Prima",
-        navLink: "/pages/MateriaPrima",
+        title: "Raw Material",
+        navLink: "/pages/listarMP",
     },
     {
         id: "Moldes",
-        title: "Moldes",
-        navLink: "/pages/Moldes",
+        title: "Molds",
+        navLink: "/pages/ListarMoldes",
     },
     {
         id: "Colaboradores",
-        title: "Colaboradores",
+        title: "Employees",
         navLink: "/pages/Colaboradores",
     },
     {
-        header: "Ferramentas",
+        header: "Builder",
     },
     {
-        id: "Reports",
-        title: "Reports",
-        navLink: "/pages/Reports",
+        id: "Tabelas",
+        title: "Tables",
+        navLink: "/pages/criarTabelas",
+    },
+    {
+        id: "Formularios",
+        title: "Forms",
+        navLink: "/pages/criarFormularios",
+    },
+    {
+        id: "EditarFormularios",
+        title: "Edit Forms",
+        navLink: "/pages/editarFormularios",
     },
     
 ];
 
+const QualityPagesRoles = [
+    {
+        header: "Follow-ups",
+    },
+    {
+        id: "Seguimentos",
+        title: "Follow-ups",
+        navLink: "/pages/listarSeguimentos",
+    },
+    {
+        header: "List Tables",
+    },
+    {
+        id: "Parametros Padrão",
+        title: "Default Parameters",
+        navLink: "/pages/ParametrosPadrao",
+    },
+    {
+        id: "maquinas",
+        title: "Machines",
+        navLink: "/pages/Maquinas",
+    },
+    {
+        id: "Materia Prima",
+        title: "Raw Material",
+        navLink: "/pages/listarMP",
+    },
+    {
+        id: "Moldes",
+        title: "Molds",
+        navLink: "/pages/ListarMoldes",
+    },
+];
+
+const CollaboratorPagesRoles = [
+    {
+        header: "Follow-ups",
+    },
+    {
+        id: "Seguimentos",
+        title: "Follow-ups",
+        navLink: "/pages/listarSeguimentos",
+    },
+    {
+        header: "List Tables",
+    },
+    {
+        id: "Parametros Padrão",
+        title: "Default Parameters",
+        navLink: "/pages/ParametrosPadrao",
+    },
+    {
+        id: "maquinas",
+        title: "Machines",
+        navLink: "/pages/Maquinas",
+    },
+    {
+        id: "Materia Prima",
+        title: "Raw Material",
+        navLink: "/pages/listarMP",
+    },
+    {
+        id: "Moldes",
+        title: "Molds",
+        navLink: "/pages/ListarMoldes",
+    },
+];
+
+
+
+function determinePagesBasedOnRole() {
+    const token = localStorage.getItem('token');
+    if (!token) return [];
+
+    const decodedJwt = parseJwt(token);
+    if (!decodedJwt || !decodedJwt.departmentNumber) return [];
+
+    switch (decodedJwt.departmentNumber) {
+        case 'IT':
+            return ITPagesRoles;
+        case 'Quality':
+            return QualityPagesRoles;
+        case 'Collaborator':
+            return CollaboratorPagesRoles;
+        default:
+            return [];
+    }
+}
+
+// Esta constante pode ser importada em outros componentes para obter as páginas do role atual
+const pages = determinePagesBasedOnRole()
 export default pages

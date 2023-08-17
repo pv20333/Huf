@@ -1,16 +1,25 @@
-//import React from 'react';
+import React from 'react';
 import { Button, Space } from 'antd';
-import { Link } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 const Botao = () => {
-    //const refresh = () => window.location.reload(true)
-  return (
-    <div>
-      <Button type="primary" /*onClick={refresh}*/>
-        <Link to="/pages/parametrospadrao/formulario">Criar Parâmetro Padrão</Link>
-      </Button>
-    </div>
-  );
+    const history = useHistory();
+
+    const handleClick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      history.push("/pages/parametrospadrao/formulario");
+  };
+  
+  
+
+    return (
+        <div>
+            <Button type="primary" onClick={handleClick}>
+                Create Default Parameter
+            </Button>
+        </div>
+    );
 };
 
 export default Botao;

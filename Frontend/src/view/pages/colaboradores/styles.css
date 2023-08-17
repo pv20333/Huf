@@ -1,0 +1,8 @@
+.user-profile-image {
+    width: 60px;
+    height: 60px;
+    padding: 5px;
+    border-radius: 50%; /* Isto fará a imagem parecer um círculo */
+    overflow: hidden; /* Isto garantirá que nenhum pedaço da imagem original seja mostrado fora do círculo */
+    object-fit: cover !important;
+}

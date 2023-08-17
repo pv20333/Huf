@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     n_TabelaGeral: Sequelize.INTEGER,
     TituloColunas: Sequelize.STRING,
-    Real: Sequelize.INTEGER,
+    Real: Sequelize.STRING,
   });
 
   return TabelaColunas;

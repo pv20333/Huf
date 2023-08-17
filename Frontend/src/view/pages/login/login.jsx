@@ -46,8 +46,13 @@ console.log(isNotExpiredBoolean())
             const response = await axiosInstance.post('/login', { username: username, password: password });
             if (response.status === 200) {
                 const data = response.data;
+                const usernameArray = data.username.data;
+                const usernameString = String.fromCharCode(...usernameArray);
                 console.log(data)
                 localStorage.setItem("token", data?.token);
+                localStorage.setItem("userPhoto", data?.photo);
+                localStorage.setItem('username', usernameString);
+                localStorage.setItem('departmentNumber', data?.department);
                 window.location.href = "/";
             }
 

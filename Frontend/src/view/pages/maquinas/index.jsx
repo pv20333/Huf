@@ -9,7 +9,7 @@ function maquinas() {
     <>
       <Row gutter={[32, 32]}>
         <Col span={24} className="text-center">
-          <h1 className="centrar-texto">Máquinas</h1>
+          <h1 className="centrar-texto">Machines</h1>
 
           <TabelaMaquinas />
         </Col>

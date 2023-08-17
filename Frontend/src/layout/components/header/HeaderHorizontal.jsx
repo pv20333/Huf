@@ -144,7 +144,7 @@ export default function HeaderHorizontal(props) {
               )}
             </Col>
 
-            <HeaderNotifications />
+            {/* <HeaderNotifications /> */}
 
             <HeaderUser />
           </Row>

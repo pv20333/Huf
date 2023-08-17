@@ -12,7 +12,7 @@ export default function HeaderText() {
       
 
       <p className="hp-header-left-text-item hp-p1-body hp-text-color-black-100 hp-text-color-dark-0 hp-ml-12 hp-mb-0">
-        Parametros de Injeção - Huf Portuguesa &nbsp;
+        Injection Parameters - Huf Portuguesa &nbsp;
         
       </p>
     </Col>

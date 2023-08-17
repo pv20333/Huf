@@ -15,19 +15,27 @@ const createTabelaGeral = async (req, res) => {
   };
   
 
-const createTabelaColunas = async (req, res) => {
-  const { n_TabelaGeral, colunas } = req.body;
-  console.log(colunas);
-  try {
-    
-    for (let i = 0; i < colunas.length; i++) {
-      await TabelaColunas.create({ n_TabelaGeral, TituloColunas: colunas[i] });
+
+
+  const createTabelaColunas = async (req, res) => {
+    const { n_TabelaGeral, colunas, Real } = req.body;
+    console.log("Recebendo requisição para criar colunas da tabela:");
+    console.log("n_TabelaGeral:", n_TabelaGeral);
+    console.log("Colunas:", colunas);
+    console.log("Real:", Real);
+    try {
+      for (let i = 0; i < colunas.length; i++) {
+        const realValue = req.body.Real[i];
+        console.log("Real value for column", i, ":", realValue);
+        await TabelaColunas.create({ n_TabelaGeral, TituloColunas: colunas[i], Real: realValue });
+      }
+      res.status(201).send();
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
-    res.status(201).send();
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-};
+  };
+
+  
 
 const listTabelaGeral = async (req, res) => {
     try {

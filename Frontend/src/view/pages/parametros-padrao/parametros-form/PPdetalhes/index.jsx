@@ -8,7 +8,7 @@ function PPdetalhes() {
     <>
       <Row gutter={[32, 32]}>
         <Col span={24} className="text-center">
-          <h1>detalhes</h1>
+          {/* <h1>detalhes</h1> */}
 
           <Detalhes  />
 

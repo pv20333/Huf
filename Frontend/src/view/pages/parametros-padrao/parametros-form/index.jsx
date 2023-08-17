@@ -8,7 +8,7 @@ function parametros_form() {
     <>
       <Row gutter={[32, 32]}>
         <Col span={24} className="text-center">
-          <h1>form</h1>
+          <h1>Default Parameter Form</h1>
 
           <Formulario  />
 

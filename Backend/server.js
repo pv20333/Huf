@@ -30,78 +30,218 @@ function authenticateDN(username, password) {
         console.error("LDAP bind error:", err);
         reject(err);
       } else {
-        searchUser();
         resolve();
       }
     });
   });
 }
 
-function searchUser() {
-  var opts = {
-        //filter: '(objectClass=*)',  //simple search
-      //  filter: '(&(uid=2)(sn=John))',// and search
-      filter: '(uid=Ana)',
-      scope: 'sub',
-      //attributes: ['cn']
+function _convert(entry) {
+  var obj = {
+    dn: entry.dn.toString(),
+    controls: []
   };
-
-  client.search('ou=Users,dc=example,dc=com', opts, function (err, res) {
-      if (err) {
-          console.log("Error in search " + err)
+  entry.attributes.forEach(function (a) {
+    var item = a.buffers;
+    if (item && item.length) {
+      if (item.length > 1) {
+        obj[a.type] = item.slice();
       } else {
-          res.on('searchEntry', function (entry) {
-              console.log('entry: ' + JSON.stringify(entry.object));
-          });
-          res.on('searchReference', function (referral) {
-              console.log('referral: ' + referral.uris.join());
-          });
-          res.on('error', function (err) {
-              console.error('error: ' + err.message);
-          });
-          res.on('end', function (result) {
-              console.log('status: ' + result.status);
-          });
+        obj[a.type] = item[0];
       }
+    } else {
+      obj[a.type] = [];
+    }
+  });
+  entry.controls.forEach(function (element, index, array) {
+    obj.controls.push(element.json);
+  });
+  return obj;
+}
+
+
+function getAttributeValue(attributes, type) {
+  const attributeObject = attributes.find(attr => attr.type === type);
+  return attributeObject ? attributeObject.values[0] : null;
+}
+
+
+function fetchUserDetails(username) {
+  const userDN = `uid=${username},ou=Users,dc=example,dc=com`;
+
+  return new Promise((resolve, reject) => {
+    const opts = {
+      filter: `(uid=${username})`,
+      scope: 'sub',
+      attributes: ['jpegPhoto', 'cn', 'departmentNumber']
+    };
+
+    client.search(userDN, opts, function(err, res) {
+      if (err) {
+        console.error("LDAP search error:", err);
+        reject(err);
+        return;
+      }
+
+      res.on('searchEntry', function(entry) {
+        const convertedEntry = _convert(entry);
+        
+        console.log("Converted Attributes:", convertedEntry);
+      
+        if (!convertedEntry || !convertedEntry.jpegPhoto) {
+            console.error("jpegPhoto is missing in the converted attributes");
+            reject(new Error("Unexpected LDAP response format"));
+            return;
+        }
+      
+        const cnValue = convertedEntry.cn;
+        const photoBuffer = convertedEntry.jpegPhoto;
+        const departmentNumberValue = convertedEntry.departmentNumber ? convertedEntry.departmentNumber.toString('utf8') : null;
+
+      
+        if (photoBuffer) {
+            console.log("Tipo de dados de jpegPhoto:", typeof photoBuffer);
+            console.log("Tamanho de jpegPhoto:", photoBuffer.length);
+            console.log(Buffer.isBuffer(photoBuffer)); // Deve imprimir 'true' se for um Buffer.
+        }
+
+        resolve({ cn: cnValue, jpegPhoto: photoBuffer, departmentNumber: departmentNumberValue });
+      });
+      
+      res.on('error', function(err) {
+        console.error("LDAP search result error:", err);
+        reject(err);
+      });
+    });
   });
 }
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+function listAllUsers() {
+  return new Promise((resolve, reject) => {
+    const baseDN = 'ou=Users,dc=example,dc=com';
+    const searchOptions = {
+      scope: 'sub', 
+      filter: '(objectClass=person)',
+      attributes: ['cn', 'departmentNumber', 'jpegPhoto']
+    };
 
+    client.search(baseDN, searchOptions, (err, res) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      const users = [];
+
+      res.on('searchEntry', (entry) => {
+        const convertedEntry = _convert(entry);
+
+        // Extraia os atributos necessários e converta Buffers para strings ou base64
+        const userData = {
+          cn: convertedEntry.cn.toString('utf8'),
+          departmentNumber: convertedEntry.departmentNumber.toString('utf8'),
+          jpegPhoto: convertedEntry.jpegPhoto ? convertedEntry.jpegPhoto.toString('base64') : null
+        };
+
+        users.push(userData);
+      });
+
+      res.on('error', (err) => {
+        reject(err);
+      });
+
+      res.on('end', (result) => {
+        resolve(users);
+      });
+    });
+  });
+}
+
+
+app.get("/users", async (req, res) => {
   try {
-    // Autenticação LDAP
-    await authenticateDN(username, password);
+    // Verificar autenticação e se o usuário é admin
+    // (você pode fazer isso usando middleware ou dentro desta função)
 
-    // Se a autenticação for bem-sucedida, gerar um token JWT
-    // const token = jwt.sign({ username }, 'segredo_jwt', { expiresIn: '1h' });
-    const token = jwt.sign({ username }, 'segredo_jwt', { expiresIn: '30s' });
-
-
-    // Enviar a resposta com o token JWT
-    res.status(200).json({ message: "Authentication successful", token });
+    const users = await listAllUsers();
+    res.status(200).json(users);
   } catch (err) {
-    res.status(401).json({ message: "Authentication failed" });
+    console.error("Error:", err.message);
+    res.status(500).json({ message: "Failed to fetch users" });
   }
 });
 
-app.post("/verify-token", (req, res) => {
-  const { token } = req.body;
 
-  try {
-    const decoded = jwt.verify(token, 'segredo_jwt');
-    console.log(decoded);
-    // Verificar se o token foi emitido pelo backend
-    // Aqui você pode fazer mais verificações, como verificar o nome de usuário ou outras informações
-    if (decoded) {
-      res.status(200).json({ valid: true });
-    } else {
+
+
+
+
+  app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+  
+    try {
+      // Autenticação LDAP
+      await authenticateDN(username, password);
+  
+      // Buscar detalhes do utilizador
+      const userDetails = await fetchUserDetails(username);
+
+      const tokenPayload = {
+        username,
+        departmentNumber: userDetails.departmentNumber
+      };
+  
+      // Se a autenticação for bem-sucedida, gerar um token JWT
+      const token = jwt.sign(tokenPayload, "segredo_jwt", { expiresIn: "10m" });
+
+      const usernameString = userDetails.cn;
+      console.log('CN:', userDetails.cn);
+
+      const departmentNumber = userDetails.departmentNumber;
+      console.log('departmentNumber:', userDetails.departmentNumber);
+
+  
+      let base64Photo = null;
+  
+      // Verifique se jpegPhoto é um Buffer
+      if (Buffer.isBuffer(userDetails.jpegPhoto)) {
+        base64Photo = userDetails.jpegPhoto.toString("base64");
+      } else {
+        console.error("jpegPhoto não é um Buffer:", typeof userDetails.jpegPhoto);
+      }
+  
+      res.status(200).json({
+        message: "Authentication successful",
+        token,
+        photo: base64Photo,
+        username: usernameString,
+        department: departmentNumber
+      });
+    } catch (err) {
+      console.error("Error:", err.message);
+      res.status(401).json({ message: "Authentication failed" });
+    }
+  });
+
+  app.post("/verify-token", (req, res) => {
+    const { token } = req.body;
+  
+    try {
+      const decoded = jwt.verify(token, 'segredo_jwt');
+      console.log(decoded);
+      // Verificar se o token foi emitido pelo backend
+      // Aqui você pode fazer mais verificações, como verificar o nome de usuário ou outras informações
+      if (decoded) {
+        res.status(200).json({ valid: true });
+      } else {
+        res.status(200).json({ valid: false });
+      }
+    } catch (err) {
       res.status(200).json({ valid: false });
     }
-  } catch (err) {
-    res.status(200).json({ valid: false });
-  }
-});
+  });
+  
+
 
 
 
@@ -167,6 +307,12 @@ require("./app/routes/editar.formularios")(app);
 require("./app/routes/preencher.formulario")(app);
 require("./app/routes/listarPP")(app);
 require("./app/routes/renderizarPP")(app);
+require("./app/routes/listar.seguimentos")(app);
+require("./app/routes/maquinas.crud")(app);
+require("./app/routes/detalhesSeg")(app);
+require("./app/routes/listarPPForm")(app);
+
+
 
 
 // set port, listen for requests

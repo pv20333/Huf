@@ -141,7 +141,7 @@ const App = () => {
 
   const columns = [
     {
-      title: 'n_ParametroPadrao',
+      title: 'ID',
       dataIndex: 'n_ParametroPadrao',
       key: 'n_ParametroPadrao',
       ...getColumnSearchProps('n_ParametroPadrao'),
@@ -152,23 +152,23 @@ const App = () => {
       )
     },
     {
-      title: 'descricao',
+      title: 'Description',
       dataIndex: 'descricao',
       key: 'descricao',
       ...getColumnSearchProps('descricao'),
     },
     {
-      title: 'historico_estados',
+      title: 'History of Status',
       dataIndex: 'historico_estados',
       key: 'historico_estados',
       ...getColumnSearchProps('historico_estados'),
     },
-    {
-      title: 'Action',
-      dataIndex: '',
-      key: 'x',
-      render: () => <Switch />,
-    },
+    // {
+    //   title: 'Action',
+    //   dataIndex: '',
+    //   key: 'x',
+    //   render: () => <Switch />,
+    // },
   ];
 
   return <Table columns={columns} dataSource={data} />;

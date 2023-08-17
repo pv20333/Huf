@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
 });
 
 
-const parseJwt = (token) => {
+export const parseJwt = (token) => {
     try {
       return JSON.parse(atob(token.split(".")[1]));
     } catch (e) {
@@ -76,7 +76,24 @@ export const isNotExpired = () => {
 
 }
 
+const getUserDetailsFromToken = (token) => {
+  const decodedJwt = parseJwt(token);
+  return {
+    username: decodedJwt.username,
+    departmentNumber: decodedJwt.departmentNumber
+  };
+};
+
+
 export const validateToken = async () => {
+
+  const token = localStorage.getItem('token');
+  
+  if (token) {
+    const userDetails = getUserDetailsFromToken(token);
+    console.log('Username:', userDetails.username);
+    console.log('DepartmentNumber:', userDetails.departmentNumber);
+  }
 
     const response = await axiosInstance.post('/verify-token', {token: localStorage.getItem('token')});
     console.log("Validatoken: " + response.data.valid)

@@ -11,6 +11,8 @@ import HeaderNotifications from "./HeaderNotifications";
 import HeaderLanguages from "./HeaderLanguages";
 import HeaderText from "./HeaderText";
 
+import LogoutButton from '../../../view/components/logout/logout';
+
 const { Header } = Layout;
 
 export default function MenuHeader(props) {
@@ -24,6 +26,12 @@ export default function MenuHeader(props) {
   const inputFocusProp = {
     ref: inputFocusRef,
   };
+  
+  
+    const handleLogout = () => {
+        // Redirecionar para a página de login após o logout
+        window.location.href = "/pages/login";
+    };
 
   // Search Active
   setTimeout(() => setSearchActive(searchHeader), 100);
@@ -81,9 +89,11 @@ export default function MenuHeader(props) {
 
         
 
-            <HeaderNotifications />
+            {/* <HeaderNotifications /> */}
 
             {/* <HeaderUser /> */}
+
+            <LogoutButton onLogout={handleLogout} />
           </Row>
         
     )

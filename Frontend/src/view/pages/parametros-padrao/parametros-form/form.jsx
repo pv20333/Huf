@@ -1,8 +1,8 @@
-import React from 'react';
-import { Button, Form, Input, Select } from 'antd';
-import {
-    Link,
-} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Select } from 'antd';
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
+
 const { Option } = Select;
 const layout = {
   labelCol: {
@@ -12,47 +12,57 @@ const layout = {
     span: 16,
   },
 };
+
 const tailLayout = {
   wrapperCol: {
     offset: 8,
     span: 16,
   },
 };
+
 const formulario = () => {
   const [form] = Form.useForm();
-  const onGenderChange = (value) => {
-    switch (value) {
-      case 'male':
-        form.setFieldsValue({
-          note: 'Hi, man!',
-        });
-        break;
-      case 'female':
-        form.setFieldsValue({
-          note: 'Hi, lady!',
-        });
-        break;
-      case 'other':
-        form.setFieldsValue({
-          note: 'Hi there!',
-        });
-        break;
-      default:
-    }
-  };
+  const [maquinas, setMaquinas] = useState([]);
+  const [moldes, setMoldes] = useState([]);
+  const [materiaPrima, setMateriaPrima] = useState([]);
+  const history = useHistory();
+
+  const handleNavigation = () => {
+  history.push('/pages/preencher-PP');
+};
+const handleBackNavigation = () => {
+  history.push('/pages/ParametrosPadrao');
+};
+
+
+
+useEffect(() => {
+  axios.get('http://localhost:8080/api/listarppForm/ListMaquinas')
+    .then(response => {
+      setMaquinas(response.data.map(item => ({ id: item.n_Maquina, label: item.MarcaModelo })));
+    });
+
+  axios.get('http://localhost:8080/api/listarppForm/ListMoldes')
+    .then(response => {
+      setMoldes(response.data.map(item => ({ id: item.n_Molde, label: item.Descricao })));
+    });
+
+  axios.get('http://localhost:8080/api/listarppForm/ListMP')
+    .then(response => {
+      setMateriaPrima(response.data.map(item => ({ id: item.n_MateriaPrima, label: item.Descricao })));
+    });
+}, []);
+
   const onFinish = (values) => {
     console.log(values);
-  };
+    history.push(`/pages/preencher-PP?maquina=${values.maquina}&molde=${values.molde}&materiaPrima=${values.materiaPrima}`);
+};
+
   const onReset = () => {
     form.resetFields();
   };
-  const onFill = () => {
-    form.setFieldsValue({
-      note: 'Hello world!',
-      gender: 'male',
-    });
-  };
-  const refresh = () => window.location.reload(true)
+
+  const refresh = () => window.location.reload(true);
 
   return (
     <Form
@@ -64,80 +74,48 @@ const formulario = () => {
         maxWidth: 600,
       }}
     >
-      <Form.Item
-        name="maquina"
-        label="Máquina"
-        rules={[
-          {
-            required: false,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="molde"
-        label="Molde"
-        rules={[
-          {
-            required: false,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="referencia"
-        label="Refêrencia"
-        rules={[
-          {
-            required: false,
-          },
-        ]}
-      >
-        <Select
-          placeholder="Select a option and change input text above"
-          onChange={onGenderChange}
-          allowClear
-        >
-          <Option value="male">male</Option>
-          <Option value="female">female</Option>
-          <Option value="other">other</Option>
+      <Form.Item name="maquina" label="Machines" rules={[{ required: false }]}>
+        <Select placeholder="Select a Machine">
+          {maquinas.map((machine, index) => (
+            <Option key={index} value={machine.id}>
+              {machine.label}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) => prevValues.gender !== currentValues.gender}
-      >
-        {({ getFieldValue }) =>
-          getFieldValue('gender') === 'other' ? (
-            <Form.Item
-              name="customizeGender"
-              label="Customize Gender"
-              rules={[
-                {
-                  required: false,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          ) : null
-        }
+
+      <Form.Item name="molde" label="Mold" rules={[{ required: false }]}>
+        <Select placeholder="Select a Mold">
+          {moldes.map((molde, index) => (
+            <Option key={index} value={molde.id}>
+              {molde.label}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
+
+      <Form.Item
+        name="materiaPrima"
+        label="Raw Material"
+        rules={[{ required: false }]}
+      >
+        <Select placeholder="Select a Raw Material">
+          {materiaPrima.map((mp, index) => (
+            <Option key={index} value={mp.id}>
+              {mp.label}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       <Form.Item {...tailLayout}>
-        
-        <Button type="primary" htmlType="submit" onClick={refresh}>
-            <Link to="/pages/parametrospadrao/formulario/criarformulario">Submit</Link>
+        <Button type="primary" htmlType="submit">
+          Create 
         </Button>
-        <Button htmlType="button" onClick={onReset}>
-          Reset
-        </Button>
-        <Button type="link" htmlType="button" onClick={onFill}>
-          Fill form
-        </Button>
+        <Button onClick={handleBackNavigation}>Back</Button>
       </Form.Item>
     </Form>
   );
 };
+
 export default formulario;

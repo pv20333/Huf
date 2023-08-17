@@ -1,3 +1,8 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
 /*centrar texto*/
 .centrar-texto{
     text-align: center;
@@ -42,3 +47,114 @@
 .ant-table table{
     box-shadow:  rgba(0, 0, 0, 0.1) 0px 3px 6px;
 }
+
+
+/* modal */
+
+.custom-modal {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .cancel-button {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .submit-button {
+    background-color: #008CBA; /* Cor azul */
+    color: white;
+  }
+
+  
+
+/* botao */
+
+.icon-button {
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+
+.icon-button-large {
+    float: right; 
+    padding: 5px;
+    margin-bottom: 1%;
+}
+
+a {
+    color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));
+    text-decoration: none;
+}
+  
+  
+.green-icon {
+    color: green;
+    size: 10em;
+}
+
+.red-icon {
+    color: red;
+}
+
+
+/* Definindo a animação */
+@keyframes zoomFadeEnter {
+    from {
+      opacity: 0;
+      transform: scale(0.1); /* Ajustado para iniciar de um tamanho muito pequeno */
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes zoomFadeLeave {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.1); /* Ajustado para reduzir a um tamanho muito pequeno ao fechar */
+    }
+  }
+  /* Aplicando a animação ao modal ao entrar */
+  .zoom-fade-enter,
+  .zoom-fade-appear {
+    animation: zoomFadeEnter 0.3s cubic-bezier(0.08, 0.82, 0.17, 1) forwards;
+  }
+  
+  /* Aplicando a animação ao modal ao sair */
+  .zoom-fade-leave {
+    animation: zoomFadeLeave 0.3s cubic-bezier(0.6, 0.04, 0.98, 0.34) forwards;
+  }
+  
+
+  .fullscreen-modal .ant-modal {
+    max-width: 100%;
+    width: 95%;
+    margin: 2% auto;
+    top: 20px;
+  }
+  
+  .fullscreen-modal .ant-modal-content {
+    height: 90vh; /* 90% da altura da janela */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media only screen and (max-width: 768px) { /* Dispositivos móveis */
+    .fullscreen-modal .ant-modal-content {
+      height: 95vh;
+    }
+  }
+  

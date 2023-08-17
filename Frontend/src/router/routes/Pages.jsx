@@ -43,26 +43,52 @@ const PagesRoutes = [
   },
   
   {
-    path: "/pages/testes",
-    component: lazy(() => import("../../view/pages/testes")),
+    path: "/pages/criarTabelas",
+    component: lazy(() => import("../../view/pages/criarTabelas")),
     layout: "VerticalLayout",
   },
 
   {
-    path: "/pages/testes2",
-    component: lazy(() => import("../../view/pages/testes2")),
+    path: "/pages/criarFormularios",
+    component: lazy(() => import("../../view/pages/criarFomularios")),
     layout: "VerticalLayout",
   },
   {
-    path: "/pages/testes3",
-    component: lazy(() => import("../../view/pages/testes3")),
+    path: "/pages/editarFormularios",
+    component: lazy(() => import("../../view/pages/editarFormularios")),
     layout: "VerticalLayout",
   },
   {
-    path: "/pages/testes4",
-    component: lazy(() => import("../../view/pages/testes4")),
+    path: "/pages/preencher-PP",
+    component: lazy(() => import("../../view/pages/preencher-PP")),
     layout: "VerticalLayout",
   },
+  {
+    path: "/pages/listarseguimentos",
+    component: lazy(() => import("../../view/pages/seguimentos-pendentes")),
+    layout: "VerticalLayout",
+  },
+  {
+    path: "/pages/seguimentos/detalhes/:n_ParametroPadrao",
+    component: lazy(() => import("../../view/pages/seguimentos-pendentes/seguimentos-detalhes")),
+    layout: "VerticalLayout",
+  },
+  {
+    path: "/pages/listarMP",
+    component: lazy(() => import("../../view/pages/materia-prima")),
+    layout: "VerticalLayout",
+  },
+  {
+    path: "/pages/listarMoldes",
+    component: lazy(() => import("../../view/pages/moldes")),
+    layout: "VerticalLayout",
+  },
+  {
+    path: "/pages/Colaboradores",
+    component: lazy(() => import("../../view/pages/colaboradores")),
+    layout: "VerticalLayout",
+  },
+  
   
 ];
 

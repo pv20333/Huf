@@ -5,6 +5,7 @@ const TabelaRespostas = db.tabela_respostas;
 const TabelaColunas = db.tabela_colunas;
 const TabelaGeral = db.tabela_geral;
 const dbSequelize = db.Sequelize;
+const Historico_Eventos = db.historico_eventos;
 
 const getParametroPadrao = async (req, res) => {
     try {
@@ -34,43 +35,44 @@ const getParametroPadrao = async (req, res) => {
 };
 
 const getParametroPadraoComDetalhes = async (req, res) => {
-    try {
-        const id = req.params.n_ParametroPadrao; 
-        const parametroPadrao = await Parametros_Padrao.findOne({
-            where: { n_ParametroPadrao: id }, 
-            include: [
-                {
-                    model: TabelaRespostas,
-                    include: [
-                        {
-                            model: TabelaColunas,
-                            include: [
-                                {
-                                    model: TabelaGeral,
-                                }
-                            ]
-                        }
-                    ]
-                },
-            ],
-            order: [
-                [TabelaRespostas, 'n_TabelaRespostas', 'ASC'],
-                [TabelaRespostas, TabelaColunas, TabelaGeral, 'n_TabelaGeral', 'ASC'],
-                [TabelaRespostas, TabelaColunas, TabelaGeral, 'numero_linhas', 'ASC'],
-                [TabelaRespostas, TabelaColunas, 'n_TabelaColunas', 'ASC'],
-                [TabelaRespostas, 'createdAt', 'ASC']
-            ]
-        });
+  try {
+      const id = req.params.n_ParametroPadrao; 
+      const parametroPadrao = await Parametros_Padrao.findOne({
+          where: { n_ParametroPadrao: id }, 
+          include: [
+              {
+                  model: TabelaRespostas,
+                  include: [
+                      {
+                          model: TabelaColunas,
+                          include: [
+                              {
+                                  model: TabelaGeral,
+                              }
+                          ]
+                      }
+                  ]
+              },
+          ],
+          order: [
+              [TabelaRespostas, 'createdAt', 'ASC'],
+              [TabelaRespostas, 'n_TabelaRespostas', 'ASC'],
+              [TabelaRespostas, TabelaColunas, TabelaGeral, 'n_TabelaGeral', 'ASC'],
+              [TabelaRespostas, TabelaColunas, TabelaGeral, 'numero_linhas', 'ASC'],
+              [TabelaRespostas, TabelaColunas, 'n_TabelaColunas', 'ASC'],
+          ]
+      });
 
-        if (!parametroPadrao) {
-            return res.status(404).send({ message: 'ParametroPadrao não encontrado' });
-        }
+      if (!parametroPadrao) {
+          return res.status(404).send({ message: 'ParametroPadrao não encontrado' });
+      }
 
-        res.status(200).send(parametroPadrao);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      res.status(200).send(parametroPadrao);
+  } catch (error) {
+      res.status(500).send({ message: error.message });
+  }
 };
+
 
 const alterarEstadoParametroPadraoDeviated = async (req, res) => {
     try {
@@ -231,32 +233,156 @@ const updateRespostas = async (req, res) => {
     
     return res.status(201).send({"success": true});
 
-  console.log("Corpo da requisição:", req.body);
- // const n_ParametroPadrao = req.params.id; // Buscando o n_ParametroPadrao do caminho da URL
-  const { n_TabelaColunas, respostas } = req.body;
+//   console.log("Corpo da requisição:", req.body);
+//  // const n_ParametroPadrao = req.params.id; // Buscando o n_ParametroPadrao do caminho da URL
+//   const { n_TabelaColunas, respostas } = req.body;
 
-  if (!n_ParametroPadrao || !n_TabelaColunas || !respostas) {
-    return res
-      .status(400)
-      .send({ message: "Campos obrigatórios estão faltando" });
-  }
+//   if (!n_ParametroPadrao || !n_TabelaColunas || !respostas) {
+//     return res
+//       .status(400)
+//       .send({ message: "Campos obrigatórios estão faltando" });
+//   }
 
+//   try {
+//     const newResposta = await TabelaRespostas.update({
+//       n_ParametrosPadrao: n_ParametroPadrao,
+//       n_TabelaColunas,
+//       respostas,
+//     });
+
+//     console.log("Nova resposta criada:", newResposta);
+//     return res.status(201).send(newResposta);
+//   } catch (error) {
+//     console.log("Erro ao adicionar respostas:", error);
+//     return res
+//       .status(500)
+//       .send({ message: "Erro ao adicionar respostas", error });
+//   }
+};
+
+const alterarEstadoParametroPadraoCancelar = async (req, res) => {
+    try {
+      const id = req.params.n_ParametroPadrao;
+      const { Titulo, Mensagem } = req.body; // Ajuste os nomes dos campos aqui
+    
+      const parametroPadrao = await Parametros_Padrao.findOne({
+        where: { n_ParametroPadrao: id },
+      });
+  
+      if (!parametroPadrao) {
+        return res.status(404).send({ message: "ParametroPadrao não encontrado" });
+      }
+  
+      // Alterar o estado do ParametroPadrao para 8
+      await Historico_Estados.update({ n_Estados: 8 }, {
+        where: { n_ParametroPadrao: id },
+      });
+  
+      // Add a new entry to the Historico_Eventos table
+      const evento = await Historico_Eventos.create({
+        Data: new Date(), // Current date
+        Titulo: Titulo, // Use o 'Titulo' enviado do frontend
+        Mensagem: Mensagem, // Use a 'Mensagem' enviada do frontend
+        n_ParametroPadrao: id,
+      });
+  
+      res.status(200).send({
+        message: `Estado do ParametroPadrao ${id} foi alterado para 8`,
+        evento: {
+          Titulo: evento.Titulo,
+          Mensagem: evento.Mensagem,
+        },
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  };
+  
+
+
+const buscarHistoricoEventosPorParametroPadrao = async (req, res) => {
+    try {
+      const idParametroPadrao = req.params.n_ParametroPadrao;
+      const historicoEventos = await Historico_Eventos.findAll({
+        where: { n_ParametroPadrao: idParametroPadrao },
+      });
+  
+      res.status(200).send(historicoEventos);
+    } catch (error) {
+      res.status(500).send({ message: 'Erro ao buscar eventos de histórico', error: error.message });
+    }
+  };
+
+  const alterarEstadoParametroPadraoSubmited = async (req, res) => {
+    try {
+        const id = req.params.n_ParametroPadrao; // Pegando o ID da URL
+        const parametroPadrao = await Parametros_Padrao.findOne({
+            where: { n_ParametroPadrao: id }, // Buscando pelo ID
+        });
+
+        // Se não encontrar nenhum ParametroPadrao com o ID fornecido
+        if (!parametroPadrao) {
+            return res.status(404).send({ message: 'ParametroPadrao não encontrado' });
+        }
+
+        // Alterar o estado do ParametroPadrao para 4
+        await Historico_Estados.update({ n_Estados: 4 }, {
+            where: { n_ParametroPadrao: id }
+        });
+
+        res.status(200).send({ message: `Estado do ParametroPadrao ${id} foi alterado para 4` });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+
+const alterarEstadoParametroPadraoSubmitedtoSaved = async (req, res) => {
   try {
-    const newResposta = await TabelaRespostas.update({
-      n_ParametrosPadrao: n_ParametroPadrao,
-      n_TabelaColunas,
-      respostas,
-    });
+      const id = req.params.n_ParametroPadrao; // Pegando o ID da URL
+      const parametroPadrao = await Parametros_Padrao.findOne({
+          where: { n_ParametroPadrao: id }, // Buscando pelo ID
+      });
 
-    console.log("Nova resposta criada:", newResposta);
-    return res.status(201).send(newResposta);
+      // Se não encontrar nenhum ParametroPadrao com o ID fornecido
+      if (!parametroPadrao) {
+          return res.status(404).send({ message: 'ParametroPadrao não encontrado' });
+      }
+
+      // Alterar o estado do ParametroPadrao para 3
+      await Historico_Estados.update({ n_Estados: 3 }, {
+          where: { n_ParametroPadrao: id }
+      });
+
+      res.status(200).send({ message: `Estado do ParametroPadrao ${id} foi alterado para 3` });
   } catch (error) {
-    console.log("Erro ao adicionar respostas:", error);
-    return res
-      .status(500)
-      .send({ message: "Erro ao adicionar respostas", error });
+      res.status(500).send({ message: error.message });
   }
 };
+
+const alterarEstadoParametroPadraoCompleto = async (req, res) => {
+  try {
+      const id = req.params.n_ParametroPadrao; // Pegando o ID da URL
+      const parametroPadrao = await Parametros_Padrao.findOne({
+          where: { n_ParametroPadrao: id }, // Buscando pelo ID
+      });
+
+      // Se não encontrar nenhum ParametroPadrao com o ID fornecido
+      if (!parametroPadrao) {
+          return res.status(404).send({ message: 'ParametroPadrao não encontrado' });
+      }
+
+      // Alterar o estado do ParametroPadrao para 7
+      await Historico_Estados.update({ n_Estados: 7 }, {
+          where: { n_ParametroPadrao: id }
+      });
+
+      res.status(200).send({ message: `Estado do ParametroPadrao ${id} foi alterado para 7` });
+  } catch (error) {
+      res.status(500).send({ message: error.message });
+  }
+};
+  
 
 
 module.exports = {
@@ -265,5 +391,10 @@ module.exports = {
     alterarEstadoParametroPadraoDeviated,
     alterarEstadoParametroPadraoDeviatedtoSaved,
     addRespostas,
-    updateRespostas
+    updateRespostas,
+    alterarEstadoParametroPadraoCancelar,
+    buscarHistoricoEventosPorParametroPadrao,
+    alterarEstadoParametroPadraoSubmited,
+    alterarEstadoParametroPadraoSubmitedtoSaved,
+    alterarEstadoParametroPadraoCompleto
 };
