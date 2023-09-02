@@ -7,6 +7,8 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 import { isIT, isQuality, isCollaborator } from '../../../../components/hooks/hasPermissions';
+import '../../../../components/styles/tabelas.css'
+
 
 
 
@@ -267,7 +269,8 @@ const updateRespostas = async () => {
         }
         case 7:
           return (
-            <button onClick={printPDF}>Print as PDF</button>
+            
+            <Button onClick={printPDF}>Print as PDF</Button>
             );
       default:
         return null;
@@ -355,101 +358,124 @@ const updateRespostas = async () => {
       <button onClick={penis}>
   Activate Lasers
 </button> */}
-    {parametroPadrao ? (
-      <>
-        Details for the default parameter: {n_ParametroPadrao}
-        {/* <p>Descrição: {parametroPadrao.descricao}</p>
-        <p>Estados:</p> */}
-        {Object.entries(tabelas).map(([key, tabela]) => (
-  <div key={key}>
-        {console.log(tabela.linhas)}
-    <h2>{tabela.designacao}</h2>
-    {n_Estados === 3 ? (
-      <EditableTable
-      columns={Array.from(tabela.colunas).map((column) => (
-        tabela.realStuff[column] === "S" ? {
-          title: tabela.originalNames[column],
-          dataIndex: column,
-          key: column,
-          render: (text, record) => <input disabled value={text} class="ant-input" />
-        } : {
-          title: tabela.originalNames[column],
-          dataIndex: column,
-          key: column,
-        }
-      ))}
-        
-        dataSource={tabela.linhas}
-        pagination={false}
-        editable={true}
-        onChange={(newData) => {
-          console.log(tabela)
-          console.log(tabelas)
-        }}
-      />
-    ) : (
-      <Table
-        rowKey={(record) => record.key}
-        columns={Array.from(tabela.colunas).map((coluna) => ({
-          title: tabela.originalNames[coluna],
-          dataIndex: coluna,
-          key: coluna,
-          
-          
-        }))}
-        dataSource={tabela.linhas}
-        pagination={false}
-      />
-    )}
-  </div>
-))}
-
-
-        {/* <p>n_Formulario: {parametroPadrao.n_Formularios}</p>
-        <p>n_VersaoFormulario: {parametroPadrao.n_VersaoFormulario}</p> */}
-        {renderButtons(n_Estados)}
-        <Modal
-        title="Cancelar ParametroPadrao"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="voltar" onClick={handleCancel}>
-            Back
-          </Button>,
-          <Button key="cancelar" type="primary" onClick={handleCancelar}>
-            Cancel
-          </Button>,
-        ]}
-      >
-        <Input
-          placeholder="Enter the cancellation title"
-          value={titulo}
-          onChange={(e) => setTitulo(e.target.value)} // Update the 'titulo' state
-        />
-        <Input.TextArea
-          placeholder="Enter the cancellation message"
-          value={mensagem}
-          onChange={(e) => setMensagem(e.target.value)} // Update the 'mensagem' state
-        />
-      </Modal>
-      {n_Estados === 8 && historicoEventos.length > 0 ? (
-        <div>
-          <h2>History of Events</h2>
-          {historicoEventos.map((evento) => (
-            <div key={evento.n_HistoricoEventos}>
-              <h3>{evento.Titulo}</h3>
-              <p>{evento.Mensagem}</p>
+      {parametroPadrao ? (
+        <>
+          {/* Details for the default parameter: {n_ParametroPadrao} */}
+          <h1>{parametroPadrao.descricao}</h1>
+        {/* <p>Estados:</p> */}
+          {Object.entries(tabelas).map(([key, tabela]) => (
+            <div key={key}>
+              {console.log(tabela.linhas)}
+              <br />
+              <h3>{tabela.designacao}</h3>
+              {n_Estados === 3 ? (
+                <EditableTable
+                  columns={Array.from(tabela.colunas).map((column) =>
+                    tabela.realStuff[column] === "S"
+                      ? {
+                          title: tabela.originalNames[column],
+                          dataIndex: column,
+                          key: column,
+                          render: (text, record) => (
+                            <input disabled value={text} class="ant-input" />
+                          ),
+                        }
+                      : {
+                          title: tabela.originalNames[column],
+                          dataIndex: column,
+                          key: column,
+                        }
+                  )}
+                  dataSource={tabela.linhas}
+                  pagination={false}
+                  editable={true}
+                  onChange={(newData) => {
+                    console.log(tabela);
+                    console.log(tabelas);
+                  }}
+                />
+              ) : (
+                <Table
+                  rowKey={(record) => record.key}
+                  columns={Array.from(tabela.colunas).map((coluna) => ({
+                    title: tabela.originalNames[coluna],
+                    dataIndex: coluna,
+                    key: coluna,
+                  }))}
+                  dataSource={tabela.linhas}
+                  pagination={false}
+                />
+              )}
             </div>
           ))}
+
+          {/* <p>n_Formulario: {parametroPadrao.n_Formularios}</p>
+        <p>n_VersaoFormulario: {parametroPadrao.n_VersaoFormulario}</p> */}
+        <br />
+          {renderButtons(n_Estados)}
+          <Modal
+            title="Cancel default parameter"
+            visible={isModalVisible}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="voltar" onClick={handleCancel}>
+                Back
+              </Button>,
+              <Button key="cancelar" type="primary" onClick={handleCancelar}>
+                Cancel
+              </Button>,
+            ]}
+          >
+            <label>Title:</label>
+            <Input
+              placeholder="Enter the cancellation title"
+              value={titulo}
+              onChange={(e) => setTitulo(e.target.value)} // Update the 'titulo' state
+            />
+
+            <label>Message:</label>
+            <Input.TextArea
+              placeholder="Enter the cancellation message"
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)} // Update the 'mensagem' state
+            />
+          </Modal>
+          {n_Estados === 8 && historicoEventos.length > 0 ? (
+            <div>
+              <br />
+              <br />
+              <h2>History of Events</h2>
+              <br />
+              {historicoEventos.map((evento) => (
+                <div
+                  key={evento.n_HistoricoEventos}
+                  style={{ marginBottom: "20px" }}
+                >
+                  <Input
+                    value={evento.Titulo}
+                    bordered={false} // remove a borda se você quiser que pareça apenas texto
+                    readOnly // torna o input somente leitura
+                    style={{ fontWeight: "bold", fontSize: "1.5em" }} // estilos similares a um h3
+                  />
+                  <Input.TextArea
+                    value={evento.Mensagem}
+                    bordered={false} // remove a borda
+                    readOnly // torna o input somente leitura
+                    style={{ resize: "none" }} // desativa o redimensionamento
+                  />
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <div class="lds-ripple">
+          <div></div>
+          <div></div>
         </div>
-      ) : null}
-      </>
-    ) : (
-      <div class="lds-ripple"><div></div><div></div></div>
-    )}
-  </div>
-  
-);
+      )}
+    </div>
+  );
 
 
 };

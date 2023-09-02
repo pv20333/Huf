@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import Switch from "./switch.jsx";
 import { useHistory } from 'react-router-dom';
+import './styles.css'
 
 
 const App = () => {
@@ -13,20 +14,31 @@ const App = () => {
   const [data, setData] = useState([]);
   const searchInput = useRef(null);
   const history = useHistory();
+
+  const estadoMapping = {
+    7: "Parameter Complete",
+    1004: "Follow-up saved",
+    1005: "Follow-up submited",
+    2003: "Follow-up canceled",
+    2004: "Follow-up completed",
+    2005: "Follow-up end injection"
+  };
+  
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get('http://localhost:8080/api/listarseguimentos/lista'); // Adicione o endereço do seu servidor aqui
-      setData(result.data.map((item, index) => ({
-        key: index,
-        n_ParametroPadrao: item.n_ParametroPadrao,
-        descricao: item.descricao,
-        historico_estados: item.Historico_Estados ? item.Historico_Estados.map(estado => estado.n_Estados).join(', ') : '',
+  const fetchData = async () => {
+    const result = await axios.get('http://localhost:8080/api/listarseguimentos/lista'); 
+    setData(result.data.map((item, index) => ({
+      key: index,
+      n_ParametroPadrao: item.n_ParametroPadrao,
+      descricao: item.descricao,
+      historico_estados: item.Historico_Estados 
+        ? item.Historico_Estados.map(estado => estadoMapping[estado.n_Estados] || estado.n_Estados).join(', ')
+        : '',
+    })));
+  };
 
-      })));
-    };
-
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -158,7 +170,7 @@ const App = () => {
       ...getColumnSearchProps('descricao'),
     },
     {
-      title: 'history of states',
+      title: 'States',
       dataIndex: 'historico_estados',
       key: 'historico_estados',
       ...getColumnSearchProps('historico_estados'),

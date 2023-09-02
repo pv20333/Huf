@@ -6,6 +6,7 @@ import EditableTable from 'antd-editabletable';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
+import '../../../components/styles/tabelas.css'
 
 
 
@@ -159,27 +160,6 @@ const Detalhes = () => {
     });
   };
 
-
-  const handleClickDeviated = async () => {
-    try {
-      const response = await axios.put(`http://localhost:8080/api/renderizarpp/parametroPadraoDeviated/${n_ParametroPadrao}`);
-      console.log(response.data);
-      setNEstados(9);
-    } catch (error) {
-      console.error("Erro ao alterar o estado: ", error);
-    }
-};
-
-const handleClickDeviatedtoSaved = async () => {
-  try {
-    const response = await axios.put(`http://localhost:8080/api/renderizarpp/parametroPadraoDeviatedtoSaved/${n_ParametroPadrao}`);
-    console.log(response.data);
-    setNEstados(3);
-  } catch (error) {
-    console.error("Erro ao alterar o estado: ", error);
-  }
-};
-
 const handleClickSubmited = async () => {
   try {
     // Esperando a função handleGuardar terminar
@@ -258,30 +238,34 @@ const updateRespostas = async () => {
 
   const renderButtons = (n_Estados) => {
     switch (n_Estados) {
-      case 7:
+      case 7: //he says this one works
         case 1004:
         return (
           <>
-            <Button type="primary" onClick={handleClickSubmited} >Submited</Button>
+          <br />
+            <Button type="primary" onClick={handleClickSubmited} >Submitted</Button>
             <Button onClick={showModal}>Cancel</Button>
-            <Button onClick={handleGuardar}>Guardar</Button>
+            <Button onClick={handleGuardar}>Save</Button>
           </>
         );
       case 1005:
         return (
           <>
+          <br />
             <Button type="primary" onClick={handleClickSubmitedtoSaved}>
-              Nao aprovado(voltar ao guardar)
+            Not Approved
             </Button>
-            <Button onClick={handleClickCompleto}>Aprovado (Completo)</Button>
+            <Button onClick={handleClickCompleto}>Approved</Button>
           </>
         );
         case 2004:
           return (
             <>
-              <button onClick={printPDF}>Print as PDF</button>
+            <br />
               <Button onClick={showModal}>Cancel</Button>
               <Button onClick={handleClickfimInjecao}>Fim injecao</Button>
+              <Button onClick={printPDF}>Print as PDF</Button>
+
             </>
 
             );
@@ -375,13 +359,15 @@ const updateRespostas = async () => {
 </button> */}
     {parametroPadrao ? (
       <>
+      <h1>{parametroPadrao.descricao}</h1>
         {/* Detalhes para o parametro padrao: {n_ParametroPadrao}
         <p>Descrição: {parametroPadrao.descricao}</p>
         <p>Estados: {n_Estados}</p> */}
         {Object.entries(tabelas).map(([key, tabela]) => (
   <div key={key}>
         {console.log(tabela.linhas)}
-    <h2>{tabela.designacao}</h2>
+        <br />
+    <h3>{tabela.designacao}</h3>
     {n_Estados === 7 || n_Estados === 1004 ? (
       <EditableTable
       columns={Array.from(tabela.colunas).map((column) => (
@@ -423,47 +409,67 @@ const updateRespostas = async () => {
 ))}
 
 
-        <p>n_Formulario: {parametroPadrao.n_Formularios}</p>
-        <p>n_VersaoFormulario: {parametroPadrao.n_VersaoFormulario}</p>
+        {/* <p>n_Formulario: {parametroPadrao.n_Formularios}</p>
+        <p>n_VersaoFormulario: {parametroPadrao.n_VersaoFormulario}</p> */}
         {renderButtons(n_Estados)}
         <Modal
-        title="Cancelar ParametroPadrao"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="voltar" onClick={handleCancel}>
-            Back
-          </Button>,
-          <Button key="cancelar" type="primary" onClick={handleCancelar}>
-            Cancel
-          </Button>,
-        ]}
-      >
-        <Input
-          placeholder="Digite o título"
-          value={titulo}
-          onChange={(e) => setTitulo(e.target.value)} // Update the 'titulo' state
-        />
-        <Input.TextArea
-          placeholder="Digite a mensagem"
-          value={mensagem}
-          onChange={(e) => setMensagem(e.target.value)} // Update the 'mensagem' state
-        />
-      </Modal>
+            title="Cancel default parameter"
+            visible={isModalVisible}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="voltar" onClick={handleCancel}>
+                Back
+              </Button>,
+              <Button key="cancelar" type="primary" onClick={handleCancelar}>
+                Cancel
+              </Button>,
+            ]}
+          >
+            <label>Title:</label>
+            <Input
+              placeholder="Enter the cancellation title"
+              value={titulo}
+              onChange={(e) => setTitulo(e.target.value)} // Update the 'titulo' state
+            />
+
+            <label>Message:</label>
+            <Input.TextArea
+              placeholder="Enter the cancellation message"
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)} // Update the 'mensagem' state
+            />
+          </Modal>
       {n_Estados === 8 && historicoEventos.length > 0 ? (
-        <div>
-          <h2>History of Events</h2>
-          {historicoEventos.map((evento) => (
-            <div key={evento.n_HistoricoEventos}>
-              <h3>{evento.Titulo}</h3>
-              <p>{evento.Mensagem}</p>
-            </div>
-          ))}
-        </div>
+         <div>
+         <br />
+         <br />
+         <h2>History of Events</h2>
+         <br />
+         {historicoEventos.map((evento) => (
+           <div
+             key={evento.n_HistoricoEventos}
+             style={{ marginBottom: "20px" }}
+           >
+             <Input
+               value={evento.Titulo}
+               bordered={false} // remove a borda se você quiser que pareça apenas texto
+               readOnly // torna o input somente leitura
+               style={{ fontWeight: "bold", fontSize: "1.5em" }} // estilos similares a um h3
+             />
+             <Input.TextArea
+               value={evento.Mensagem}
+               bordered={false} // remove a borda
+               readOnly // torna o input somente leitura
+               style={{ resize: "none" }} // desativa o redimensionamento
+             />
+           </div>
+         ))}
+       </div>
       ) : null}
       </>
     ) : (
-      <p>Loading...</p>
+      <div class="lds-ripple"><div></div><div></div></div>
+
     )}
   </div>
   

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Select, Table, Button } from "antd";
+import '../../components/styles/tabelas.css'
+
 
 const { Option } = Select;
 
@@ -317,44 +319,30 @@ function RenderizarFormulario() {
 
   return (
     <div>
-      <h1>Choose a Form</h1>
-      <Select style={{ width: 200 }} onChange={handleFormularioChange}>
+  
+      <Select style={{ width: 200 }} onChange={handleFormularioChange} defaultValue="formPlaceholder">
+        <Option value="formPlaceholder" disabled>
+          Select Form to edit
+        </Option>
         {formularios.map((formulario) => (
-          <Option
-            key={formulario.n_Formularios}
-            value={formulario.n_Formularios}
-          >
+          <Option key={formulario.n_Formularios} value={formulario.n_Formularios}>
             {formulario.designacao}
           </Option>
         ))}
       </Select>
-
-      
+  
       {tabelasFormulario.map((tabela, index) => {
-        console.log("Renderizando tabela:", tabela);
-
-                // DEBUG: Imprima o valor de tabela.TabelaGeral.Colunas
-        console.log("Colunas para esta tabela:", tabela?.TabelaGeral?.Colunas);
-
-        // DEBUG: Imprima o número de linhas para esta tabela
-        console.log("Número de linhas para esta tabela:", tabela?.TabelaGeral?.numero_linhas);
         return (
           <div key={index} style={{ marginBottom: "20px" }}>
             <Table
-              columns={tabela?.TabelaGeral?.Colunas?.map((coluna) => {
-                console.log("Processing column:", coluna);
-                return {
-                  title: coluna.TituloColunas,
-                  dataIndex: coluna.TituloColunas,
-                  key: coluna.n_TabelaColunas
-                }
-              }) ?? []}
-
+              columns={tabela?.TabelaGeral?.Colunas?.map((coluna) => ({
+                title: coluna.TituloColunas,
+                dataIndex: coluna.TituloColunas,
+                key: coluna.n_TabelaColunas
+              })) ?? []}
               dataSource={Array.from(
                 { length: tabela?.TabelaGeral?.numero_linhas ?? 0 },
-                (_, i) => ({
-                  key: i
-                })
+                (_, i) => ({ key: i })
               )}
               pagination={false}
             />
@@ -363,13 +351,8 @@ function RenderizarFormulario() {
             </Button>
             <Select
               style={{ width: 100 }}
-              value={
-                prioridades.find((item) => item.tableId === tabela.n_TabelaGeral)
-                  ?.prioridade
-              }
-              onChange={(value) =>
-                handlePrioridadeChange(tabela.n_TabelaGeral, value)
-              }
+              value={prioridades.find((item) => item.tableId === tabela.n_TabelaGeral)?.prioridade}
+              onChange={(value) => handlePrioridadeChange(tabela.n_TabelaGeral, value)}
             >
               {prioridades.map((_, index) => (
                 <Option key={index + 1} value={index + 1}>
@@ -379,24 +362,24 @@ function RenderizarFormulario() {
             </Select>
           </div>
         );
-        
-        })}
-        <Select style={{ width: 200 }} onChange={handleTableChange}>
-  {tabelas.map((tabela) => {
-    console.log('Table ID in Select:', tabela.n_TabelaGeral); // Add this line
-    return (
-      <Option key={tabela.n_TabelaGeral} value={tabela.n_TabelaGeral}>
-        {tabela.designacao}
-      </Option>
-    );
-  })}
-</Select>
-
-        <Button onClick={handleAddTable}>Add Table</Button>
-        <Button onClick={handleGuardar}>Save</Button>
-        </div>
-        );
-        
-}
+      })}
+  
+      <Select style={{ width: 200 }} onChange={handleTableChange} defaultValue="tablePlaceholder">
+        <Option value="tablePlaceholder" disabled>
+          Select table
+        </Option>
+        {tabelas.map((tabela) => (
+          <Option key={tabela.n_TabelaGeral} value={tabela.n_TabelaGeral}>
+            {tabela.designacao}
+          </Option>
+        ))}
+      </Select>
+  
+      <p></p>
+      <Button onClick={handleAddTable}>Add Table</Button>
+      <Button onClick={handleGuardar}>Save</Button>
+    </div>
+  );
+        };  
 
 export default RenderizarFormulario;

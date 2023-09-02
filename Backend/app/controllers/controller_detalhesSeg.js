@@ -127,6 +127,8 @@ const alterarEstadoParametroPadraoSeg_GuardadotoSeg_Submeter = async (
         .send({ message: "ParametroPadrao não encontrado" });
     }
 
+    console.log("\n\n\nID: " + id + "\n\n\n")
+
     // Alterar o estado do ParametroPadrao para 7
     await Historico_Estados.update(
       { n_Estados: 1005 },
@@ -134,6 +136,8 @@ const alterarEstadoParametroPadraoSeg_GuardadotoSeg_Submeter = async (
         where: { n_ParametroPadrao: id },
       }
     );
+
+    console.log(`Estado do ParametroPadrao ${id} foi alterado para 1005 Seg_Submetido`)
 
     res.status(200).send({
       message: `Estado do ParametroPadrao ${id} foi alterado para 1005 Seg_Submetido`,

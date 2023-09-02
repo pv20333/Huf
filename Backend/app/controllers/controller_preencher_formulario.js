@@ -120,6 +120,7 @@ const createOrUpdateParametroPadrao = async (req, res) => {
   
 
 const submeter = async (req, res) => {
+    console.log("\n\n\n\n\n------------------>>>>>>>")
     const { n_ParametroPadrao, designacao } = req.body;
     const idFormulario = req.params.id; // obtendo o id do formulário
 
@@ -145,22 +146,31 @@ const submeter = async (req, res) => {
       
       let n_Versao;
       let n_ParametroPadraoAtual;
+      console.log(n_ParametroPadrao)
+      console.log(n_ParametroPadrao)
+      console.log(n_ParametroPadrao)
+      console.log(n_ParametroPadrao)
+      console.log(n_ParametroPadrao)
+      console.log(n_ParametroPadrao)
       if (!n_ParametroPadrao) {
-        const newParametroPadrao = await Parametros_Padrao.create({
-          n_Versao: 1,
-          dataCriacao: new Date(),
-          descricao: designacao,
-          n_Formularios: idFormulario, // usando o id do formulário ao criar o novo parametro padrao
-          n_VersaoFormulario, // adicionando o valor da chave primária do formulário mais recente
-        });
 
-        n_Versao = 1;
-        n_ParametroPadraoAtual = newParametroPadrao.n_ParametroPadrao;
-        console.log('Novo parâmetro padrão criado:', newParametroPadrao);
-        res.status(201).send({
-          message: "Parâmetro padrão criado com sucesso",
-          n_ParametroPadrao: n_ParametroPadraoAtual,
-        });
+          const newParametroPadrao = await Parametros_Padrao.create({
+            n_Versao: 1,
+            dataCriacao: new Date(),
+            descricao: designacao,
+            n_Formularios: idFormulario, // usando o id do formulário ao criar o novo parametro padrao
+            n_VersaoFormulario, // adicionando o valor da chave primária do formulário mais recente
+          });
+  
+          n_Versao = 1;
+          n_ParametroPadraoAtual = newParametroPadrao.n_ParametroPadrao;
+          console.log('Novo parâmetro padrão criado:', newParametroPadrao);
+          res.status(201).send({
+            message: "Parâmetro padrão criado com sucesso",
+            n_ParametroPadrao: n_ParametroPadraoAtual,
+          });
+
+
       } else {
         const parametroPadrao = await Parametros_Padrao.findByPk(n_ParametroPadrao);
         
@@ -183,18 +193,22 @@ const submeter = async (req, res) => {
           n_ParametroPadrao: n_ParametroPadraoAtual,
         });
       }
-  
-      await Historico_Estados.create({
+      console.log("Trying to exdecute update")
+      console.log("Trying to exdecute update")
+      console.log("Trying to exdecute update")
+      console.log("Trying to exdecute update")
+      console.log("Trying to exdecute update")
+      console.log("Trying to exdecute update")
+      await Historico_Estados.update({
         n_Estados: 4, // O id para 'submited'
-        n_ParametroPadrao: n_ParametroPadraoAtual,
-        n_Versao,
-        Data: new Date(), // Adicionando a data atual
-      });
+      }, {where: {n_ParametroPadrao: n_ParametroPadrao}});
   
     } catch (error) {
       console.log('Erro ao criar/atualizar parâmetro padrão:', error);
       return res.status(500).send({ message: "Erro ao adicionar/atualizar parâmetro padrão", error });
     }
+    console.log("\n\n\n\n\n------------------<<<<<<<<")
+
 };
 
   

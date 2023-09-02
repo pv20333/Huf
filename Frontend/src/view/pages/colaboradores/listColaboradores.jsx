@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table } from 'antd';
+import '../../components/styles/tabelas.css'
 
 function UsersList() {
   const [users, setUsers] = useState([]);

@@ -175,7 +175,7 @@ const getFormularioTabelas = async (req, res) => {
       }
   
       // Incrementando a versão do formulário antes de salvar
-      await formulario.increment('n_VersaoFormulario');
+      //await formulario.increment('n_VersaoFormulario');
   
       // Recarregar o formulário com o novo valor de n_VersaoFormulario
       formulario = await Formularios.findOne({ where: { n_Formularios: id } });
@@ -190,6 +190,9 @@ const getFormularioTabelas = async (req, res) => {
 
   
   const removeTabelaFromFormulario = async (req, res) => {
+
+    console.log("\n\n\n----------------------------- >>>>>")
+
     const formularioId = Number(req.params.formularioId);
     const tabelaId = Number(req.params.tabelaId);
   
@@ -217,7 +220,7 @@ const getFormularioTabelas = async (req, res) => {
       await formulario.removeTabelaGeral(tabelaId);
   
       // Incrementando a versão do formulário antes de salvar
-      await formulario.increment('n_VersaoFormulario');
+      //await formulario.increment('n_VersaoFormulario');
   
       // Recarregar o formulário com o novo valor de n_VersaoFormulario
       formulario = await Formularios.findOne({ where: { n_Formularios: formularioId } });
@@ -228,6 +231,9 @@ const getFormularioTabelas = async (req, res) => {
       console.error(`removeTabelaFromFormulario - Error removing tabela from Formulario with id ${formularioId}: ${error.message}`);
       res.status(500).send({ message: error.message });
     }
+
+    console.log("\n\n\n----------------------------- <<<<<<")
+
   };
 
   const updatePrioridadesNOVO = async (req, res) => {

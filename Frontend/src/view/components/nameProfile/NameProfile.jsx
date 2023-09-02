@@ -12,9 +12,9 @@ const NameProfile = () => {
 
     // Na renderização do componente:
     return (
-        <div>
+        <span>
             {username}
-        </div>
+            </span>
     );
 };
 

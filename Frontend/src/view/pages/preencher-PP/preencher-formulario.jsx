@@ -5,6 +5,10 @@ import Swal from 'sweetalert2';
 import TabelaMoldes from "./tabelaMoldes";
 import TabelaMP from "./tabelaMP";
 import TabelaMaquinas from "./tabelaMaquinass"
+import '../../components/styles/tabelas.css'
+import Ator from "../../components/nameProfile/NameProfile"
+
+
 
 const { Option } = Select;
 
@@ -91,15 +95,17 @@ function RenderizarFormulario() {
 
   const handleDesignacaoChange = (e) => {
     setDesignacao(e.target.value);
-  };
+  }; 
 
   const handleGuardar = () => {
+
+    return new Promise((resolve, reject) => {
 
     if(designacao == null || designacao.length == 0 || designacao == ""){
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Thats a nono, you need a descrption men dont be stupid',
+        text: 'Please fill the description.',
       })
       return
     }
@@ -144,15 +150,24 @@ function RenderizarFormulario() {
             });
           });
         });
+        resolve(res); // Resolve a Promise
       })
       .catch((error) => {
         console.error("Erro ao guardar", error);
+        reject(error);
       });
+    });
   };
 
 
   const handleSubmeter = () => {
+
+    handleGuardar()
+    .then((response) => {
+      console.log(response)
+      let id = response.data.n_ParametroPadrao;
     const parametroPadrao = {
+      n_ParametroPadrao: id,
       designacao
     };
 
@@ -193,8 +208,12 @@ function RenderizarFormulario() {
       })
       .catch((error) => {
         console.error("Erro ao submeter", error);
-      });
-  };
+        });
+    })
+    .catch((error) => {
+      console.error("Não foi possível executar handleSubmeter devido a um erro em handleGuardar", error);
+    });
+};
 
   const initializeTabelaRespostas = (tabelas) => {
     const initialData = {};
@@ -228,14 +247,19 @@ function RenderizarFormulario() {
   useEffect(() => {
     initializeTabelaRespostas(tabelasFormulario);
   }, [tabelasFormulario]);
+
+  
   
 
   return (
     <div>
-      <h1>Enter the name of the default parameter</h1>
+      <h3>Enter the name of the default parameter</h3>
       <Input onChange={handleDesignacaoChange} value={designacao} />
-
-      <h1>Chose a Form</h1>
+      <br />
+      <br />
+      <h4 >Author: <Ator/></h4>
+      <br />
+      <h3>Chose a Form</h3>
       <Select style={{ width: 200 }} onChange={handleFormularioChange}>
         {formularios.map((formulario) => (
           <Option

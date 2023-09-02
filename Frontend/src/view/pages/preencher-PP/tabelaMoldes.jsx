@@ -9,7 +9,7 @@ const columns = [
   },
   {
     title: 'Molde',
-    dataIndex: 'Descripcion',
+    dataIndex: 'Descricao',
   },
 ];
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Select, Table, Button, Input } from "antd";
+import '../../components/styles/tabelas.css'
+
 
 const { Option } = Select;
 
@@ -69,24 +71,30 @@ function EscolherTabela() {
 
   return (
     <div>
-      <h1>Choose a Table</h1>
       <Input
         placeholder="Form name"
         value={nomeFormulario}
         onChange={handleNomeFormularioChange}
       />
+      <br />
       {selectedTables.map((table, index) => (
         <div key={index}>
+          <br />
           <Select
             style={{ width: 200 }}
             onChange={(value) => handleTabelaChange(index, value)}
+            defaultValue="placeholder"
           >
+            <Option value="placeholder" disabled>
+              Select a table
+            </Option>
             {tabelas.map((tabela) => (
               <Option key={tabela.n_TabelaGeral} value={tabela.n_TabelaGeral}>
                 {tabela.designacao}
               </Option>
             ))}
           </Select>
+
           <Table
             columns={table.colunas}
             dataSource={Array.from({ length: table.numero_linhas }, (_, i) => ({
@@ -96,6 +104,7 @@ function EscolherTabela() {
           />
         </div>
       ))}
+      <br />
       <Button onClick={handleAddTable}>Add Table</Button>
       <Button onClick={handleGuardar}>Save</Button>
     </div>

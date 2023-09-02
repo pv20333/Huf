@@ -8,7 +8,7 @@ function listarSeguimentos() {
     <>
       <Row gutter={[32, 32]}>
         <Col span={24} className="text-center">
-          <h1>Follow-ups Details</h1>
+          {/* <h1>Follow-ups Details</h1> */}
 
           <DetalhesSeguimentos  />
 

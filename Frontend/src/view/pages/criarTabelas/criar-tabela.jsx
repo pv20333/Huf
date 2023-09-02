@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, InputNumber, Form, Input, Table, Checkbox } from "antd";
 import axios from "axios";
+import '../../components/styles/tabelas.css'
+
 
 const { Item } = Form;
 
@@ -93,6 +95,12 @@ function Tabela() {
 
       console.log("Tabela e colunas criadas com sucesso");
       setRenderTable(true);
+
+       // setNumLinhas(0);
+      // setNumColunas(0);
+      // setDados([]);
+      // setNomeTabela("");
+
     } catch (error) {
       console.error("Erro ao criar tabela e colunas", error);
     }
@@ -116,22 +124,23 @@ function Tabela() {
   return (
     <div>
       <Form layout="inline" onSubmit={handleFormSubmit}>
-        <Form.Item label="Linhas">
+        <Form.Item label="Lines">
           <InputNumber
             min={0}
             value={numLinhas}
             onChange={handleNumLinhasChange}
           />
         </Form.Item>
-        <Form.Item label="Colunas">
+        <Form.Item label="Columns">
           <InputNumber
             min={0}
             value={numColunas}
             onChange={handleNumColunasChange}
           />
         </Form.Item>
-        <Form.Item label="Nome da Tabela">
+        <Form.Item label="Name of the table" >
           <Input
+            placeholder="Insert name"
             value={nomeTabela}
             onChange={(e) => setNomeTabela(e.target.value)}
           />
@@ -145,8 +154,10 @@ function Tabela() {
   
       {dados[0]?.map((_, index) => (
         <div key={index}>
+          <br />
           <Input
-            placeholder={`Nome da coluna ${index + 1}`}
+            style={{ width: '400px' }}
+            placeholder={`Name of the column ${index + 1}`}
             onChange={(event) => handleNomeColunaChange(event, index)}
           />
           <label htmlFor={`real-checkbox-${index}`}>
@@ -156,11 +167,19 @@ function Tabela() {
               checked={realValues[index] === "Sim"}
               onChange={(event) => handleRealCheckboxChange(event, index)}
             >
-              {realValues[index] === "Sim" ? "Sim" : "Nao"}
+              {/* {realValues[index] === "Sim" ? "Sim" : "Nao"} */}
             </Checkbox>
           </label>
         </div>
       ))}
+      {renderTable && (
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          //scroll={{ y: 300 }}
+        />
+      )}
     </div>
   );
 }

@@ -311,6 +311,8 @@ require("./app/routes/listar.seguimentos")(app);
 require("./app/routes/maquinas.crud")(app);
 require("./app/routes/detalhesSeg")(app);
 require("./app/routes/listarPPForm")(app);
+require("./app/routes/homepage")(app);
+
 
 
 

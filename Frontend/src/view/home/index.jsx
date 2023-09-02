@@ -2,6 +2,8 @@ import {React, useEffect} from "react";
 
 import { Card, Col, Row } from "antd";
 
+import Dashboard from "./dashboard"
+
 import PageTitle from "../../layout/components/content/page-title";
 //import ImgProfile from "../components/imgProfile/imgProfile"
 
@@ -24,9 +26,9 @@ export default function Home() {
   return (
     <Row gutter={[32, 32]}>
       <PageTitle
-        pageTitle="Home Page"
+        pageTitle="General View"
       />
-        {/* <ImgProfile /> */}
+        <Dashboard />
       
     </Row>
   );

@@ -13,16 +13,31 @@ const App = () => {
   const [data, setData] = useState([]);
   const searchInput = useRef(null);
   const history = useHistory();
+
+  const estadoMapping = {
+    3: "Saved",
+    4: "Submitted",
+    7: "Completed",
+    8: "Canceled"
+  };
+
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get('http://localhost:8080/api/listarpp/parametros_padrao'); // Adicione o endereço do seu servidor aqui
-      setData(result.data.map((item, index) => ({
-        key: index,
-        n_ParametroPadrao: item.n_ParametroPadrao,
-        descricao: item.descricao,
-        historico_estados: item.Historico_Estados ? item.Historico_Estados.map(estado => estado.n_Estados).join(', ') : '',
+      setData(
+        result.data.map((item, index) => ({
+          key: index,
+          n_ParametroPadrao: item.n_ParametroPadrao,
+          descricao: item.descricao,
+          historico_estados: item.Historico_Estados
+            ? item.Historico_Estados.map(
+                (estado) => estadoMapping[estado.n_Estados] || estado.n_Estados
+              ).join(", ")
+            : "",
+        }))
+      );
 
-      })));
     };
 
     fetchData();
@@ -158,7 +173,7 @@ const App = () => {
       ...getColumnSearchProps('descricao'),
     },
     {
-      title: 'History of Status',
+      title: 'States',
       dataIndex: 'historico_estados',
       key: 'historico_estados',
       ...getColumnSearchProps('historico_estados'),

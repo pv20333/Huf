@@ -10,11 +10,10 @@ function parametros_padrao() {
   return (
     <>
       <Row gutter={[32, 32]}>
-        <Col span={24} className="text-center">
+        <Col span={24} >
           <h1 className="centrar-texto">Default Parameter</h1>
             
           <Button />
-            <br />
             <br />
           <TabelaParametrosPadrao />
         </Col>

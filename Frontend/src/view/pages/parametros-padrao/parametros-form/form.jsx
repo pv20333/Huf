@@ -74,6 +74,7 @@ useEffect(() => {
         maxWidth: 600,
       }}
     >
+      <br />
       <Form.Item name="maquina" label="Machines" rules={[{ required: false }]}>
         <Select placeholder="Select a Machine">
           {maquinas.map((machine, index) => (
